@@ -93,30 +93,30 @@ public:
         MAKE_PTR(DifferentiatedCellProliferativeType, p_transit_type);
         std::vector<CellPtr> cells;
 		
-		/* Seed RNG */
-		RandomNumberGenerator* randGenerator = RandomNumberGenerator::Instance();
-		randGenerator->Reseed(1);
+	/* Seed RNG */
+	RandomNumberGenerator* randGenerator = RandomNumberGenerator::Instance();
+	randGenerator->Reseed(1);
 
         for (unsigned i=0; i<p_mesh->GetNumElements(); i++)
         {
             ContactInhibitionCellCycleModel* p_cycle_model = new ContactInhibitionCellCycleModel();
-			ODESrnModel* p_srn_model = new ODESrnModel;
-			
-			/* Random Initial GTPase Concentration */
-			double G_conc = (randGenerator->ranf());
-			
-			std::vector<double> initial_conditions;
-			
-			/* Set initial conditions for ODE solver */
-			initial_conditions.push_back(G_conc);
-			// initial target area
-			initial_conditions.push_back(0.8);
-			// initial cell area
-			initial_conditions.push_back(0.866025);
-			p_srn_model->SetInitialConditions(initial_conditions);
+	    ODESrnModel* p_srn_model = new ODESrnModel;
+
+		/* Random Initial GTPase Concentration */
+		double G_conc = (randGenerator->ranf());
+
+		std::vector<double> initial_conditions;
+
+		/* Set initial conditions for ODE solver */
+		initial_conditions.push_back(G_conc);
+		// initial target area
+		initial_conditions.push_back(0.8);
+		// initial cell area
+		initial_conditions.push_back(0.866025);
+		p_srn_model->SetInitialConditions(initial_conditions);
 			
             p_cycle_model->SetDimension(2);
-			/* Prevent cell division - all cells out of M phase */
+	    /* Prevent cell division - all cells out of M phase */
             p_cycle_model->SetBirthTime(-(double)i - 2.0);
             p_cycle_model->SetQuiescentVolumeFraction(1.0);
             p_cycle_model->SetEquilibriumVolume(1.0);
@@ -130,44 +130,51 @@ public:
 
         VertexBasedCellPopulation<2> cell_population(*p_mesh, cells);
 		
-		// Record mean area, mean perimeter in a CSV file
-		cell_population.AddPopulationWriter<CsvWriter>();
-		// Record polygon geometry information in a CSV file
-		cell_population.AddPopulationWriter<ShapeWriter>();
-		// Record neighbour information in a CSV file
-		cell_population.AddPopulationWriter<NumNeighboursWriter>();
-		// Record Rho GTPase level in cell ID 1
-		cell_population.AddPopulationWriter<OneCellGTPaseWriter>();
-		// Generate XML file
-		cell_population.AddCellWriter<XMLCellWriter>();
+	// Record mean area, mean perimeter in a CSV file
+	cell_population.AddPopulationWriter<CsvWriter>();
+	// Record polygon geometry information in a CSV file
+	cell_population.AddPopulationWriter<ShapeWriter>();
+	// Record neighbour information in a CSV file
+	cell_population.AddPopulationWriter<NumNeighboursWriter>();
+	// Record Rho GTPase level in cell ID 1
+	cell_population.AddPopulationWriter<OneCellGTPaseWriter>();
+	// Generate XML file
+	cell_population.AddCellWriter<XMLCellWriter>();
 		
         OffLatticeSimulation<2> simulator(cell_population);
 		
         simulator.SetOutputDirectory("20x20GTPAse_2500_0.2beta_lowAdhesion_Random_G_scale_1point15_cellcelladhesion80_deformation1_cellboundaryadhesion60_surface_0");
         
-		simulator.SetSamplingTimestepMultiple(200);
-		simulator.SetDt(0.01);
+	simulator.SetSamplingTimestepMultiple(200);
+	simulator.SetDt(0.01);
         simulator.SetEndTime(2500.0);
         
         MAKE_PTR(VolumeTrackingModifier<2>, p_modifier);
         simulator.AddSimulationModifier(p_modifier);
 		
-		/* Couples cell target area to GTPase concentration */
-		MAKE_PTR(ODEParameterAreaModifier<2>, p_ODE_modifier);
-		simulator.AddSimulationModifier(p_ODE_modifier);
-		
-		/* Default values
-		* Cell-Boundary Adhesion = 1
-		* Cell-Cell Adhesion = 0.5
-		* Deformation Energy = 100
-		* Membrane Surface Energy = 10
-		*/
-        
-		MAKE_PTR(NagaiHondaForce<2>, p_force);
-		p_force->SetNagaiHondaDeformationEnergyParameter(1.0);
-		p_force->SetNagaiHondaMembraneSurfaceEnergyParameter(0.0);
-		p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(60.0);
-		p_force->SetNagaiHondaCellCellAdhesionEnergyParameter(80.0);
+	/* Couples cell target area to GTPase concentration */
+	MAKE_PTR(ODEParameterAreaModifier<2>, p_ODE_modifier);
+	simulator.AddSimulationModifier(p_ODE_modifier);
+
+	/* Default values
+	* Cell-Boundary Adhesion = 1
+	* Cell-Cell Adhesion = 0.5
+	* Deformation Energy = 100
+	* Membrane Surface Energy = 10
+	*/
+	
+	/* GTPase simulation values
+	* Deformation Energy = 100
+	* Membrane Surface Energy = 0 (no perimeter constraint)
+	* High Adhesion Scenario: cell-cell: 0.75, cell-boundary: 1.0
+	* Medium Adhesion Scenario: cell-cell: 1.0, cell-boundary: 1.0
+	* Low Adhesion Scenario: cell-cell: 1.0, cell-boundary: 0.75
+	*/
+	MAKE_PTR(NagaiHondaForce<2>, p_force);
+	p_force->SetNagaiHondaDeformationEnergyParameter(1.0);
+	p_force->SetNagaiHondaMembraneSurfaceEnergyParameter(0.0);
+	p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
+	p_force->SetNagaiHondaCellCellAdhesionEnergyParameter(0.75);
         simulator.AddForce(p_force);
 
         simulator.Solve();
