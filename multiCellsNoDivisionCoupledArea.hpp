@@ -101,19 +101,19 @@ public:
         {
             ContactInhibitionCellCycleModel* p_cycle_model = new ContactInhibitionCellCycleModel();
 	    ODESrnModel* p_srn_model = new ODESrnModel;
+	    
+	    /* Random Initial GTPase Concentration */
+	    double G_conc = (randGenerator->ranf());
+	    
+	    std::vector<double> initial_conditions;
 
-		/* Random Initial GTPase Concentration */
-		double G_conc = (randGenerator->ranf());
-
-		std::vector<double> initial_conditions;
-
-		/* Set initial conditions for ODE solver */
-		initial_conditions.push_back(G_conc);
-		// initial target area
-		initial_conditions.push_back(0.8);
-		// initial cell area
-		initial_conditions.push_back(0.866025);
-		p_srn_model->SetInitialConditions(initial_conditions);
+	    /* Set initial conditions for ODE solver */
+	    initial_conditions.push_back(G_conc);
+	    // initial target area
+	    initial_conditions.push_back(0.8);
+	    // initial cell area
+	    initial_conditions.push_back(0.866025);
+	    p_srn_model->SetInitialConditions(initial_conditions);
 			
             p_cycle_model->SetDimension(2);
 	    /* Prevent cell division - all cells out of M phase */
@@ -171,7 +171,7 @@ public:
 	* Low Adhesion Scenario: cell-cell: 1.0, cell-boundary: 0.75
 	*/
 	MAKE_PTR(NagaiHondaForce<2>, p_force);
-	p_force->SetNagaiHondaDeformationEnergyParameter(1.0);
+	p_force->SetNagaiHondaDeformationEnergyParameter(100.0);
 	p_force->SetNagaiHondaMembraneSurfaceEnergyParameter(0.0);
 	p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
 	p_force->SetNagaiHondaCellCellAdhesionEnergyParameter(0.75);
