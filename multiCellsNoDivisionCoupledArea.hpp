@@ -86,7 +86,7 @@ public:
     {
 		
         /* 400 cells */
-        HoneycombVertexMeshGenerator generator(20, 20);
+        HoneycombVertexMeshGenerator generator(50, 50);
         MutableVertexMesh<2,2>* p_mesh = generator.GetMesh();
 
         MAKE_PTR(WildTypeCellMutationState, p_state);
