@@ -24,7 +24,7 @@ ShapeWriter<ELEMENT_DIM, SPACE_DIM>::ShapeWriter()
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void ShapeWriter<ELEMENT_DIM, SPACE_DIM>::WriteHeader(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
-	*this->mpOutStream << "# TimeStamp,Triangle,Quadrilateral,Pentagon,Hexagon,Heptagon\n";
+    *this->mpOutStream << "# TimeStamp,Triangle,Quadrilateral,Pentagon,Hexagon,Heptagon\n";
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -35,9 +35,8 @@ void ShapeWriter<ELEMENT_DIM, SPACE_DIM>::VisitAnyPopulation(AbstractCellPopulat
 
     unsigned num_cells = pCellPopulation->GetNumRealCells();
 	
+    *this->mpOutStream << num_cells << " "; 
 
-	*this->mpOutStream << num_cells << " ";
-    
 }
 
 
@@ -48,7 +47,7 @@ void ShapeWriter<ELEMENT_DIM, SPACE_DIM>::Visit(MeshBasedCellPopulation<ELEMENT_
     pCellPopulation->Update();
 
     unsigned num_cells = pCellPopulation->GetNumRealCells();
-	double total_area = static_cast<MutableMesh<ELEMENT_DIM,SPACE_DIM>&>((pCellPopulation->rGetMesh())).GetVolume();
+    double total_area = static_cast<MutableMesh<ELEMENT_DIM,SPACE_DIM>&>((pCellPopulation->rGetMesh())).GetVolume();
 
     
     *this->mpOutStream << num_cells << " ";
@@ -78,20 +77,20 @@ void ShapeWriter<ELEMENT_DIM, SPACE_DIM>::Visit(VertexBasedCellPopulation<SPACE_
 	
     int edges[5] = {};
 	
-	pCellPopulation->Update();
+    pCellPopulation->Update();
 
     unsigned num_cells = pCellPopulation->GetNumRealCells();
 
-	for (typename AbstractCellPopulation<SPACE_DIM>::Iterator cell_iter = pCellPopulation->Begin();
-	cell_iter != pCellPopulation->End();
-	++cell_iter){
-		VertexElement < SPACE_DIM, SPACE_DIM > *VertexElement = pCellPopulation->GetElementCorrespondingToCell(*cell_iter);
-		int num_edges = VertexElement->GetNumNodes();
-		edges[num_edges-3]+=1;
-	}
-	for (int i = 0; i < sizeof(edges)/sizeof(edges[0]); i ++){
-    	*this->mpOutStream << "," << edges[i];
-	}	
+    for (typename AbstractCellPopulation<SPACE_DIM>::Iterator cell_iter = pCellPopulation->Begin();
+    cell_iter != pCellPopulation->End();
+    ++cell_iter){
+      VertexElement < SPACE_DIM, SPACE_DIM > *VertexElement = pCellPopulation->GetElementCorrespondingToCell(*cell_iter);
+      int num_edges = VertexElement->GetNumNodes();
+      edges[num_edges-3]+=1;
+    }
+    for (int i = 0; i < sizeof(edges)/sizeof(edges[0]); i ++){
+      *this->mpOutStream << "," << edges[i];
+    }	
 
 }
 

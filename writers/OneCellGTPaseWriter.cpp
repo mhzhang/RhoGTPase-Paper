@@ -39,7 +39,7 @@ void OneCellGTPaseWriter<ELEMENT_DIM, SPACE_DIM>::VisitAnyPopulation(AbstractCel
     unsigned num_cells = pCellPopulation->GetNumRealCells();
 	
 
-	*this->mpOutStream << num_cells << ",";
+    *this->mpOutStream << num_cells << ",";
     
 }
 
@@ -50,7 +50,7 @@ void OneCellGTPaseWriter<ELEMENT_DIM, SPACE_DIM>::Visit(MeshBasedCellPopulation<
     pCellPopulation->Update();
 
     unsigned num_cells = pCellPopulation->GetNumRealCells();
-	double total_area = static_cast<MutableMesh<ELEMENT_DIM,SPACE_DIM>&>((pCellPopulation->rGetMesh())).GetVolume();
+    double total_area = static_cast<MutableMesh<ELEMENT_DIM,SPACE_DIM>&>((pCellPopulation->rGetMesh())).GetVolume();
 
     
     *this->mpOutStream << num_cells << " ";
