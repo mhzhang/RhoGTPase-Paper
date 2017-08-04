@@ -143,7 +143,7 @@ public:
 		
         OffLatticeSimulation<2> simulator(cell_population);
 		
-        simulator.SetOutputDirectory("20x20GTPAse_2500_0.2beta_lowAdhesion_Random_G_scale_1point15_cellcelladhesion80_deformation1_cellboundaryadhesion60_surface_0");
+        simulator.SetOutputDirectory("50x50GTPAse_2500_0.2beta_lowAdhesion_Random_G_scale_1point15_cellcelladhesion1_deformation1_cellboundaryadhesion1_surface_0");
         
 	simulator.SetSamplingTimestepMultiple(200);
 	simulator.SetDt(0.01);
@@ -174,7 +174,7 @@ public:
 	p_force->SetNagaiHondaDeformationEnergyParameter(100.0);
 	p_force->SetNagaiHondaMembraneSurfaceEnergyParameter(0.0);
 	p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
-	p_force->SetNagaiHondaCellCellAdhesionEnergyParameter(0.75);
+	p_force->SetNagaiHondaCellCellAdhesionEnergyParameter(1.0);
         simulator.AddForce(p_force);
 
         simulator.Solve();
