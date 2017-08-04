@@ -45,22 +45,22 @@ void XMLCellWriter<ELEMENT_DIM, SPACE_DIM>::WriteTimeStamp()
 void XMLCellWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
 	// Cell ID
-    *this->mpOutStream << "<cell ";
+        *this->mpOutStream << "<cell ";
 	unsigned cell_id = pCell->GetCellId();
 	*this->mpOutStream << "cell_id=\"" << cell_id << "\" ";
 	
 	// Centroid
-    c_vector<double, SPACE_DIM> centre_location = pCellPopulation->GetLocationOfCellCentre(pCell);
-    *this->mpOutStream << "x=\"" << centre_location[0] << "\" ";
-    *this->mpOutStream << "y=\"" << centre_location[1] << "\" ";
+        c_vector<double, SPACE_DIM> centre_location = pCellPopulation->GetLocationOfCellCentre(pCell);
+        *this->mpOutStream << "x=\"" << centre_location[0] << "\" ";
+        *this->mpOutStream << "y=\"" << centre_location[1] << "\" ";
 
 	// Area
 	double volume = pCell->GetCellData()->GetItem("volume");
 	// Only write cells with finite volume (avoids a case for boundary cells in MeshBasedCellPopulation)
-    if (volume < DBL_MAX)   
-    {
-        *this->mpOutStream << "area=\"" << volume << "\" ";
-    }
+        if (volume < DBL_MAX)   
+        {
+          *this->mpOutStream << "area=\"" << volume << "\" ";
+        }
 	
 	// Label
 	if (pCell->HasCellProperty<CellLabel>()){
@@ -80,12 +80,12 @@ void XMLCellWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCel
 	*this->mpOutStream << "G=\"" << target_area << "\" ";
 	
 	// Perimeter
-	 unsigned elem_index = pCellPopulation->GetLocationIndexUsingCell(pCell);
-    double perimeter = dynamic_cast<VertexBasedCellPopulation<ELEMENT_DIM>*>(pCellPopulation)->rGetMesh().GetSurfaceAreaOfElement(elem_index);
-    *this->mpOutStream << "perimeter=\"" << perimeter << "\" ";
+	unsigned elem_index = pCellPopulation->GetLocationIndexUsingCell(pCell);
+        double perimeter = dynamic_cast<VertexBasedCellPopulation<ELEMENT_DIM>*>(pCellPopulation)->rGetMesh().GetSurfaceAreaOfElement(elem_index);
+        *this->mpOutStream << "perimeter=\"" << perimeter << "\" ";
 
 	// Neighbours
-    std::set<unsigned> neighbours = pCellPopulation->GetNeighbouringLocationIndices(pCell);
+        std::set<unsigned> neighbours = pCellPopulation->GetNeighbouringLocationIndices(pCell);
 	
 	// Number of Neighbours
 	int num_neighbours = neighbours.size();
@@ -93,13 +93,13 @@ void XMLCellWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCel
 	
 	// List of Neighbouring Cell IDs
 	*this->mpOutStream << "neighbors=\"";
-    for (std::set<unsigned>::iterator neighbour_iter = neighbours.begin();
+        for (std::set<unsigned>::iterator neighbour_iter = neighbours.begin();
             neighbour_iter != neighbours.end();
             ++neighbour_iter)
-    {
-        *this->mpOutStream << " " << (pCellPopulation->GetCellUsingLocationIndex(*neighbour_iter))->GetCellId();
-    }
-    *this->mpOutStream << "\" ";
+        {
+          *this->mpOutStream << " " << (pCellPopulation->GetCellUsingLocationIndex(*neighbour_iter))->GetCellId();
+        }
+        *this->mpOutStream << "\" ";
 	
 	// Number of Edges	
 	VertexElement < ELEMENT_DIM, ELEMENT_DIM > *VertexElement = dynamic_cast<VertexBasedCellPopulation<ELEMENT_DIM>*>(pCellPopulation)->GetElementCorrespondingToCell(pCell);
@@ -107,7 +107,7 @@ void XMLCellWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCel
 	*this->mpOutStream << "num_edges=\"" << num_edges << "\" ";
 		
 	// End tag   
-    *this->mpOutStream << "/>\n";
+        *this->mpOutStream << "/>\n";
 }
 
 // Dummy implementation because it is required

@@ -69,8 +69,8 @@ for i in range(x_range):
 	# to convert fft indices to frequency values:
 	# divide by number of indices and multiply by # of samples per second (freq)
 	# ODE solver params: 'stepSize':0.01
-	# CHASTE Sampling Rate = 200
-    # RHS Multiplier (time scale) = 0.25
+        # CHASTE Sampling Rate = 200
+        # RHS Multiplier (time scale) = 0.25
 	frequencies[i] = float(float(i)/timelimit)*(1/(200*0.01));
 		
 plt.plot(frequencies, np.absolute(fft_res))
